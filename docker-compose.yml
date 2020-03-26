@@ -1,0 +1,33 @@
+version: '2'
+
+services:
+  database:
+    image: postgres:12.2-alpine
+    restart: always
+    ports: 
+      - '3000:5432'
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: trainingDatabase
+
+  backend:
+    build: '../chat-app-training'
+    depends_on: 
+      - database
+    restart: always
+    ports:
+      - 3001:3001
+    
+    command: npm run dev
+    environment:
+      NODE_ENV: development
+
+  frontend:
+    build: '../chat-app-frontend'
+    depends_on: 
+      - backend
+    restart: always
+    ports:
+      - 3002:3000
+    command: npm start
